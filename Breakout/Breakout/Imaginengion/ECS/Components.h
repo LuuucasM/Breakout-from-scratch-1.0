@@ -26,10 +26,10 @@ struct C_Movement {
 	glm::vec2 velocity;
 	float speed;
 	float direction;
-	int whatever;
 };
 
 struct C_Collision {
 	CollisionClasses CollisionClass;
+	CollisionShapes CollisionShape;
 	std::map<CollisionClasses, CollisionFunc> CollisionFunctions;
 };

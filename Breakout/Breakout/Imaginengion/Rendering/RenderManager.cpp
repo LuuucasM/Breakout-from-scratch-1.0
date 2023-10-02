@@ -58,12 +58,17 @@ int RenderManager::Init(){
     return 0;
 }
 
-void RenderManager::ProcessInput() {
-    if 
+void RenderManager::SetWindowShouldClose(bool val) {
+    glfwSetWindowShouldClose(Window, val);
 }
 
-bool RenderManager::WindowShouldClose() {
+bool RenderManager::GetWindowShouldClose() {
     return glfwWindowShouldClose(Window);
+}
+
+void RenderManager::ClearBuffer() {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void RenderManager::SwapBuffers() {

@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\LukeM\OneDrive\Documents\GitHub\Breakout\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\LukeM\OneDrive\Documents\GitHub\Breakout\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Dev\Breakout-from-scratch-1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Dev\Breakout-from-scratch-1.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\LukeM\OneDrive\Documents\GitHub\Breakout\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\LukeM\OneDrive\Documents\GitHub\Breakout\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Dev\Breakout-from-scratch-1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Dev\Breakout-from-scratch-1.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -142,6 +142,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Imaginengion\ECS\CollisionSystem.cpp" />
     <ClCompile Include="Imaginengion\ECS\ComponentManager.cpp" />
+    <ClCompile Include="Imaginengion\ECS\MovementSystem.cpp" />
     <ClCompile Include="Imaginengion\ECS\RenderSystem2D.cpp" />
     <ClCompile Include="Imaginengion\ECS\SystemManager.cpp" />
     <ClCompile Include="Imaginengion\Rendering\RenderManager.cpp" />
@@ -158,10 +159,12 @@
     <ClInclude Include="Imaginengion\ECS\ECSConstants.h" />
     <ClInclude Include="Imaginengion\ECS\ECSCoordinator.h" />
     <ClInclude Include="Imaginengion\ECS\EntityManager.h" />
+    <ClInclude Include="Imaginengion\ECS\MovementSystem.h" />
     <ClInclude Include="Imaginengion\ECS\RenderSystem2D.h" />
     <ClInclude Include="Imaginengion\ECS\System.h" />
     <ClInclude Include="Imaginengion\ECS\SystemManager.h" />
     <ClInclude Include="Imaginengion\Levels\GameLevel.h" />
+    <ClInclude Include="Imaginengion\Math\Math.h" />
     <ClInclude Include="Imaginengion\Rendering\glad\glad.h" />
     <ClInclude Include="Imaginengion\Rendering\GLFW\glfw3.h" />
     <ClInclude Include="Imaginengion\Rendering\GLFW\glfw3native.h" />

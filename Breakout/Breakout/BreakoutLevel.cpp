@@ -43,6 +43,7 @@ void BreakoutLevel::LoadLevel(int window_width, int window_height) {
 					block = ECSCoord.CreateEntity();
 					ECSCoord.AddComponent<C_RigidBody>(block, { glm::vec3(unit_width * x, unit_height * y, 0.0f), 0.0f, glm::vec3(unit_width, unit_height, 0.0f) });
 					ECSCoord.AddComponent<C_Model>(block, { true, "Ball", "block_solid", glm::vec3(0.8f, 0.8f, 0.7f)});
+					ECSCoord.AddComponent<C_Collision>(block, { CollisionClasses::WALL, CollisionShapes::RECT });
 					Entities.insert(block);
 				}
 				else if (tileData[y][x] > 1) { //regular block
@@ -60,7 +61,8 @@ void BreakoutLevel::LoadLevel(int window_width, int window_height) {
 					if (tileData[y][x] == 5) {
 						ECSCoord.AddComponent<C_Model>(block, { true, "Ball", "block", glm::vec3(1.0f, 0.5f, 0.0f)});
 					}
-					
+					ECSCoord.AddComponent<C_Collision>(block, { CollisionClasses::BRICK, CollisionShapes::RECT });
+
 					Entities.insert(block);
 				}
 			}

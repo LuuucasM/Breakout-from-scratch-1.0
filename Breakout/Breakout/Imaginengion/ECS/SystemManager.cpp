@@ -5,6 +5,7 @@
 //put all the systems after this comment
 #include "RenderSystem2D.h"
 #include "CollisionSystem.h"
+#include "MovementSystem.h"
 
 extern ECSCoordinator ECSCoord;
 
@@ -29,4 +30,13 @@ void SystemManager::InitSystems() {
 		SetMask<CollisionSystem>(mask);
 	}
 	GetSystem<CollisionSystem>()->Init();
+
+	//Movement System
+	RegisterSystem<MovementSystem>();
+	{
+		ComponentMask mask;
+		mask.set(ECSCoord.GetComponentType<C_RigidBody>());
+		mask.set(ECSCoord.GetComponentType<C_Movement>());
+		SetMask<MovementSystem>(mask);
+	}
 }

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <glm/glm.hpp>
 #include <cstdint>
 #include <bitset>
 
@@ -16,6 +16,11 @@ enum CollisionClasses {
 	BALL,
 	BRICK,
 	WALL
+};
+
+enum CollisionShapes {
+	RECT = 1 << 0,
+	CIRCLE = 1 << 1
 };
 
 typedef void (*CollisionFunc)(EntityID, EntityID);
