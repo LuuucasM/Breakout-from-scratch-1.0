@@ -31,5 +31,6 @@ struct C_Movement {
 struct C_Collision {
 	CollisionClasses CollisionClass;
 	CollisionShapes CollisionShape;
-	std::map<CollisionClasses, CollisionFunc> CollisionFunctions;
+	std::map<EntityID, CollisionFunc> CollisionEntityFunctions;
+	std::map<CollisionClasses, CollisionFunc> CollisionClassFunctions;
 };

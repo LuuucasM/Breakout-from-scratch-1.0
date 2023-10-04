@@ -23,4 +23,4 @@ enum CollisionShapes {
 	CIRCLE = 1 << 1
 };
 
-typedef void (*CollisionFunc)(EntityID, EntityID);
+typedef void (*CollisionFunc)(EntityID, EntityID, glm::vec3);

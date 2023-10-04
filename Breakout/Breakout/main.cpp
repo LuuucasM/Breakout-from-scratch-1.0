@@ -8,39 +8,47 @@
 #include "Imaginengion/ECS/CollisionSystem.h"
 #include "Imaginengion/ECS/MovementSystem.h"
 
+#include <glm/gtx/string_cast.hpp>
+
 int WINDOW_WIDTH = 800;
 int WINDOW_HEIGHT = 600;
 
+RenderManager RenderingManager(RenderInterfaceType::OPENGL, WINDOW_WIDTH, WINDOW_HEIGHT, "Breakout");
 ECSCoordinator ECSCoord;
+
 std::map<std::string, Shader> ResourceManager::Shaders;
 std::map<std::string, Texture2D> ResourceManager::Textures;
 
-void BallToWall(EntityID ball, EntityID wall) {
+void BallToWall(EntityID ball, EntityID wall, glm::vec3 location) {
+	auto Circle = ECSCoord.GetComponent<C_RigidBody>(ball);
+	glm::vec3 circle_center(Circle->Position.x + (Circle->Size.x / 2), Circle->Position.y + (Circle->Size.y / 2), Circle->Position.z + (Circle->Size.z / 2));
+	glm::vec3 balltowallvec = glm::normalize(circle_center - location);
 	auto ballMovement = ECSCoord.GetComponent<C_Movement>(ball);
-	ballMovement->velocity.y *= -1;
+	if (balltowallvec.x) {
+		ballMovement->velocity.x *= -1.0f;
+	}
+	else {
+		ballMovement->velocity.y *= -1.0f;
+	}
 }
 
-void BallToPaddle(EntityID ball, EntityID paddle) {
-	auto Circle = ECSCoord.GetComponent<C_RigidBody>(ball);
+void BallToBottomWall(EntityID ball, EntityID wall, glm::vec3 location){
+	RenderingManager.SetWindowShouldClose(true);
+}
+
+void BallToPaddle(EntityID ball, EntityID paddle, glm::vec3 location) {
 	auto Rect = ECSCoord.GetComponent<C_RigidBody>(paddle);
-	glm::vec3 circle_center(Circle->Position.x + (Circle->Size.x / 2), Circle->Position.y + (Circle->Size.y / 2), Circle->Position.z + (Circle->Size.z / 2));
-	glm::vec3 rectangle_center(Rect->Position.x + (Rect->Size.x / 2), Rect->Position.y + (Rect->Size.y / 2), Rect->Position.z + (Rect->Size.z / 2));
-	glm::vec3 rectangle_half_extents(Rect->Size.x / 2, Rect->Size.y / 2, Rect->Size.z / 2);
 
-	glm::vec3 difference = circle_center - rectangle_center;
-	glm::vec3 clamped = glm::clamp(difference, -rectangle_half_extents, rectangle_half_extents);
-
-	glm::vec3 closest = rectangle_center + clamped;
-
-
-
+	//first split the paddle into sections and then set new_x_val according to which section the ball collided with
+	float sections = Rect->Size.x / 11.0f;
+	float section_num = (location.x - Rect->Position.x)/sections;
+	int new_x_val = (int)(section_num - 6.0f);
+	
 	auto ballMovement = ECSCoord.GetComponent<C_Movement>(ball);
 	ballMovement->velocity.y *= -1;
-
-
+	ballMovement->velocity.x = (float)new_x_val;
 }
 int main() {
-	RenderManager RenderingManager(RenderInterfaceType::OPENGL, WINDOW_WIDTH, WINDOW_HEIGHT, "Breakout");
 	RenderingManager.Init();
 
 	ECSCoord.Init();
@@ -61,13 +69,13 @@ int main() {
 	ECSCoord.AddComponent<C_Collision>(TopWall, { CollisionClasses::WALL, CollisionShapes::RECT });
 	EntityID BottomWall = ECSCoord.CreateEntity();
 	ECSCoord.AddComponent<C_RigidBody>(BottomWall, { glm::vec3(0.0f, (float)WINDOW_HEIGHT, 0.0f), 0.0f, glm::vec3((float)WINDOW_WIDTH, 3.0f, 0.0f)});
-	ECSCoord.AddComponent<C_Collision>(TopWall, { CollisionClasses::WALL, CollisionShapes::RECT });
+	ECSCoord.AddComponent<C_Collision>(BottomWall, { CollisionClasses::WALL, CollisionShapes::RECT });
 	EntityID LeftWall = ECSCoord.CreateEntity();
 	ECSCoord.AddComponent<C_RigidBody>(LeftWall, { glm::vec3(-3.0f, 0.0f, 0.0f), 0.0f, glm::vec3(3.0f, (float)WINDOW_HEIGHT, 0.0f)});
-	ECSCoord.AddComponent<C_Collision>(TopWall, { CollisionClasses::WALL, CollisionShapes::RECT });
+	ECSCoord.AddComponent<C_Collision>(LeftWall, { CollisionClasses::WALL, CollisionShapes::RECT });
 	EntityID RightWall = ECSCoord.CreateEntity();
 	ECSCoord.AddComponent<C_RigidBody>(RightWall, { glm::vec3((float)WINDOW_WIDTH, 0.0f, 0.0f), 0.0f, glm::vec3(3.0f, (float)WINDOW_HEIGHT, 0.0f)});
-	ECSCoord.AddComponent<C_Collision>(TopWall, { CollisionClasses::WALL, CollisionShapes::RECT });
+	ECSCoord.AddComponent<C_Collision>(RightWall, { CollisionClasses::WALL, CollisionShapes::RECT });
 
 
 	EntityID Ball = ECSCoord.CreateEntity();
@@ -75,8 +83,9 @@ int main() {
 	ECSCoord.AddComponent<C_Model>(Ball, { true, "Ball", "face", glm::vec3(1.0f, 1.0f, 1.0f)});
 	ECSCoord.AddComponent<C_Movement>(Ball, {glm::vec2(0.0f, 0.0f), 0.0f, 0.0f});
 	ECSCoord.AddComponent<C_Collision>(Ball, { CollisionClasses::BALL, CollisionShapes::CIRCLE });
-	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionFunctions.insert({ CollisionClasses::WALL, BallToWall });
-	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionFunctions.insert({ CollisionClasses::PADDLE, BallToPaddle });
+	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionClassFunctions.insert({ CollisionClasses::WALL, BallToWall });
+	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionClassFunctions.insert({ CollisionClasses::PADDLE, BallToPaddle });
+	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionEntityFunctions.insert({ BottomWall, BallToBottomWall });;
 	bool IsBallStuck = true;
 
 	EntityID Paddle = ECSCoord.CreateEntity();
@@ -87,7 +96,7 @@ int main() {
 
 	BreakoutLevel level1("one.lvl");
 
-	level1.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT/2);
+	//level1.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT/2);
 
 	double deltaTime = 0.f;
 	double lastFrame = 0.f;
