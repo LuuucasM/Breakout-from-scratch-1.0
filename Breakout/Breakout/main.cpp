@@ -15,6 +15,7 @@ int WINDOW_HEIGHT = 600;
 
 RenderManager RenderingManager(RenderInterfaceType::OPENGL, WINDOW_WIDTH, WINDOW_HEIGHT, "Breakout");
 ECSCoordinator ECSCoord;
+GameLevel* CurrentLevel;
 
 std::map<std::string, Shader> ResourceManager::Shaders;
 std::map<std::string, Texture2D> ResourceManager::Textures;
@@ -48,6 +49,24 @@ void BallToPaddle(EntityID ball, EntityID paddle, glm::vec3 location) {
 	ballMovement->velocity.y *= -1;
 	ballMovement->velocity.x = (float)new_x_val;
 }
+
+void BallToBrick(EntityID ball, EntityID brick, glm::vec3 location) {
+	std::cout << "ball entity id: " << ball << std::endl;
+	std::cout << "brick entity id: " << brick << std::endl;
+	auto Circle = ECSCoord.GetComponent<C_RigidBody>(ball);
+	glm::vec3 circle_center(Circle->Position.x + (Circle->Size.x / 2), Circle->Position.y + (Circle->Size.y / 2), Circle->Position.z + (Circle->Size.z / 2));
+	glm::vec3 balltowallvec = glm::normalize(circle_center - location);
+	auto ballMovement = ECSCoord.GetComponent<C_Movement>(ball);
+	if (balltowallvec.x) {
+		ballMovement->velocity.x *= -1.0f;
+	}
+	else {
+		ballMovement->velocity.y *= -1.0f;
+	}
+	ECSCoord.SetEntityToDestroy(brick);
+	CurrentLevel->RemoveEntity(brick);
+}
+
 int main() {
 	RenderingManager.Init();
 
@@ -86,6 +105,7 @@ int main() {
 	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionClassFunctions.insert({ CollisionClasses::WALL, BallToWall });
 	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionClassFunctions.insert({ CollisionClasses::PADDLE, BallToPaddle });
 	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionEntityFunctions.insert({ BottomWall, BallToBottomWall });;
+	ECSCoord.GetComponent<C_Collision>(Ball)->CollisionClassFunctions.insert({ CollisionClasses::BRICK, BallToBrick });
 	bool IsBallStuck = true;
 
 	EntityID Paddle = ECSCoord.CreateEntity();
@@ -95,8 +115,8 @@ int main() {
 	ECSCoord.AddComponent<C_Collision>(Paddle, { CollisionClasses::PADDLE, CollisionShapes::RECT });
 
 	BreakoutLevel level1("one.lvl");
-
-	//level1.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT/2);
+	CurrentLevel = &level1;
+	level1.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT/2);
 
 	double deltaTime = 0.f;
 	double lastFrame = 0.f;
@@ -115,7 +135,7 @@ int main() {
 		}
 		if (RenderingManager.Keys[GLFW_KEY_LEFT]) {
 			auto movement_component = ECSCoord.GetComponent<C_Movement>(Paddle);
-			movement_component->velocity = glm::vec2(-4.0f, 0.0f);
+			movement_component->velocity = glm::vec2(-5.0f, 0.0f);
 			if (IsBallStuck) {
 				auto ball_movement = ECSCoord.GetComponent<C_Movement>(Ball);
 				ball_movement->velocity = glm::vec2(-4.0f, 0.0f);
@@ -123,7 +143,7 @@ int main() {
 		}
 		if (RenderingManager.Keys[GLFW_KEY_RIGHT]) {
 			auto movement_component = ECSCoord.GetComponent<C_Movement>(Paddle);
-			movement_component->velocity = glm::vec2(4.0f, 0.0f);
+			movement_component->velocity = glm::vec2(5.0f, 0.0f);
 			if (IsBallStuck) {
 				auto ball_movement = ECSCoord.GetComponent<C_Movement>(Ball);
 				ball_movement->velocity = glm::vec2(4.0f, 0.0f);
@@ -140,6 +160,7 @@ int main() {
 		//update game state
 		ECSCoord.GetSystem<MovementSystem>()->Update();
 		ECSCoord.GetSystem<CollisionSystem>()->Update();
+		ECSCoord.CleanupEntities();
 
 		//render all objects need to be rendered
 		RenderingManager.ClearBuffer();
@@ -150,6 +171,11 @@ int main() {
 
 		//poll events
 		RenderingManager.PollEvents();
+
+		//check if the game condition has been met
+		if (level1.CheckGameOver()) {
+			RenderingManager.SetWindowShouldClose(true);
+		}
 	}
 
 	return 0;

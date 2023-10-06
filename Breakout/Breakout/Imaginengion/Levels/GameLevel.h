@@ -11,4 +11,5 @@ public:
 	GameLevel() {};
 	~GameLevel() {};
 	std::unordered_set<EntityID> Entities;
+	virtual void RemoveEntity(EntityID ID) {};
 };

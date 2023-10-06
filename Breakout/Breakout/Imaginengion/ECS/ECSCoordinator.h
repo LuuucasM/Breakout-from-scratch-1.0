@@ -4,12 +4,21 @@
 #include "EntityManager.h"
 #include "SystemManager.h"
 
+#include <unordered_set>
+
 class ECSCoordinator {
 
 private:
 	std::unique_ptr<ComponentManager> CompManager;
 	std::unique_ptr<EntityManager> EntManager;
 	std::unique_ptr<SystemManager> SysManager;
+	std::unordered_set<EntityID> EntitiesToDestroy;
+
+	void DestroyEntity(EntityID entity) {
+		EntManager->DestroyEntity(entity);
+		CompManager->EntityDestroyed(entity);
+		SysManager->RemoveEntity(entity);
+	}
 
 public:
 	ECSCoordinator() {};
@@ -26,10 +35,13 @@ public:
 	EntityID CreateEntity() {
 		return EntManager->CreateEntity();
 	}
-	void DestroyEntity(EntityID entity) {
-		EntManager->DestroyEntity(entity);
-		CompManager->EntityDestroyed(entity);
-		SysManager->RemoveEntity(entity);
+	void SetEntityToDestroy(EntityID entity) {
+		EntitiesToDestroy.insert(entity);
+	}
+	void CleanupEntities() {
+		for (auto ent : EntitiesToDestroy) {
+			DestroyEntity(ent);
+		}
 	}
 	//component stuff
 	template<typename T>

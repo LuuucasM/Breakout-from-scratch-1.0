@@ -58,7 +58,7 @@ public:
 	void EntityDestroyed(EntityID entity){
 		for (auto const& pair : ComponentArrays) {
 			auto const& componentarray = pair.second;
-			componentarray->RemoveComponent(entity);
+			componentarray->EntityDestroyed(entity);
 		}
 	}
 };

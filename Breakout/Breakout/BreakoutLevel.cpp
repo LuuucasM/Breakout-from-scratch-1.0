@@ -69,3 +69,11 @@ void BreakoutLevel::LoadLevel(int window_width, int window_height) {
 		}
 	}
 }
+
+void BreakoutLevel::RemoveEntity(EntityID ID) {
+	Entities.erase(ID);
+}
+
+bool BreakoutLevel::CheckGameOver() {
+	return Entities.size() <= 0;
+}
