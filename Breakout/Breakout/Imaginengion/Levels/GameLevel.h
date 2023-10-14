@@ -12,4 +12,6 @@ public:
 	~GameLevel() {};
 	std::unordered_set<EntityID> Entities;
 	virtual void RemoveEntity(EntityID ID) {};
+	virtual bool CheckGameOver() { return false; };
+	const char* filename;
 };

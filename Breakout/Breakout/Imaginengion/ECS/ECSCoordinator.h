@@ -42,6 +42,7 @@ public:
 		for (auto ent : EntitiesToDestroy) {
 			DestroyEntity(ent);
 		}
+		EntitiesToDestroy.clear();
 	}
 	//component stuff
 	template<typename T>

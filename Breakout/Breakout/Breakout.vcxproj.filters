@@ -48,6 +48,9 @@
     <ClCompile Include="Imaginengion\ECS\MovementSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Imaginengion\ECS\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BreakoutLevel.h">
@@ -968,6 +971,9 @@
     <ClInclude Include="Imaginengion\Math\Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Imaginengion\ECS\ParticleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Imaginengion\Rendering\glm\detail\func_common.inl">
@@ -1384,6 +1390,7 @@
     <None Include="four.lvl" />
     <None Include="shader.vs" />
     <None Include="shader.fs" />
+    <None Include="test.lvl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="awesomeface.png">

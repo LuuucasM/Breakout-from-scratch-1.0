@@ -143,6 +143,7 @@
     <ClCompile Include="Imaginengion\ECS\CollisionSystem.cpp" />
     <ClCompile Include="Imaginengion\ECS\ComponentManager.cpp" />
     <ClCompile Include="Imaginengion\ECS\MovementSystem.cpp" />
+    <ClCompile Include="Imaginengion\ECS\ParticleSystem.cpp" />
     <ClCompile Include="Imaginengion\ECS\RenderSystem2D.cpp" />
     <ClCompile Include="Imaginengion\ECS\SystemManager.cpp" />
     <ClCompile Include="Imaginengion\Rendering\RenderManager.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Imaginengion\ECS\ECSCoordinator.h" />
     <ClInclude Include="Imaginengion\ECS\EntityManager.h" />
     <ClInclude Include="Imaginengion\ECS\MovementSystem.h" />
+    <ClInclude Include="Imaginengion\ECS\ParticleSystem.h" />
     <ClInclude Include="Imaginengion\ECS\RenderSystem2D.h" />
     <ClInclude Include="Imaginengion\ECS\System.h" />
     <ClInclude Include="Imaginengion\ECS\SystemManager.h" />
@@ -599,6 +601,7 @@
     <None Include="one.lvl" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+    <None Include="test.lvl" />
     <None Include="three.lvl" />
     <None Include="two.lvl" />
   </ItemGroup>

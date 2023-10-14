@@ -127,7 +127,7 @@ int main() {
 		if (RenderingManager.Keys[GLFW_KEY_SPACE] && IsBallStuck) {
 			IsBallStuck = false;
 			auto ball_movement = ECSCoord.GetComponent<C_Movement>(Ball);
-			ball_movement->velocity = glm::vec2(0.0f, -4.0);
+			ball_movement->velocity = glm::vec2(0.0f, -5.0);
 		}
 		//process input
 		if (RenderingManager.Keys[GLFW_KEY_LEFT_ALT] && RenderingManager.Keys[GLFW_KEY_F4]) {
@@ -138,7 +138,7 @@ int main() {
 			movement_component->velocity = glm::vec2(-5.0f, 0.0f);
 			if (IsBallStuck) {
 				auto ball_movement = ECSCoord.GetComponent<C_Movement>(Ball);
-				ball_movement->velocity = glm::vec2(-4.0f, 0.0f);
+				ball_movement->velocity = glm::vec2(-5.0f, 0.0f);
 			}
 		}
 		if (RenderingManager.Keys[GLFW_KEY_RIGHT]) {
@@ -146,7 +146,7 @@ int main() {
 			movement_component->velocity = glm::vec2(5.0f, 0.0f);
 			if (IsBallStuck) {
 				auto ball_movement = ECSCoord.GetComponent<C_Movement>(Ball);
-				ball_movement->velocity = glm::vec2(4.0f, 0.0f);
+				ball_movement->velocity = glm::vec2(5.0f, 0.0f);
 			}
 		}
 		if (!RenderingManager.Keys[GLFW_KEY_LEFT] && !RenderingManager.Keys[GLFW_KEY_RIGHT]) {
@@ -173,8 +173,33 @@ int main() {
 		RenderingManager.PollEvents();
 
 		//check if the game condition has been met
-		if (level1.CheckGameOver()) {
-			RenderingManager.SetWindowShouldClose(true);
+		if (CurrentLevel->CheckGameOver()) {
+			IsBallStuck = true;
+			auto ballBody = ECSCoord.GetComponent<C_RigidBody>(Ball);
+			auto paddleBody = ECSCoord.GetComponent<C_RigidBody>(Paddle);
+			ballBody->Position.x = 385.0f;
+			ballBody->Position.y = (float)WINDOW_HEIGHT - 50.0f;
+			paddleBody->Position.x = 350.0f;
+			paddleBody->Position.y = (float)WINDOW_HEIGHT - 20.0f;
+			//RenderingManager.SetWindowShouldClose(true);
+			if (CurrentLevel->filename == "one.lvl") {
+				BreakoutLevel level2("two.lvl");
+				level2.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT / 2);
+				CurrentLevel = &level2;
+			}
+			else if (CurrentLevel->filename == "two.lvl") {
+				BreakoutLevel level3("three.lvl");
+				level3.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT / 2);
+				CurrentLevel = &level3;
+			}
+			else if (CurrentLevel->filename == "three.lvl") {
+				BreakoutLevel level4("four.lvl");
+				level4.LoadLevel(WINDOW_WIDTH, WINDOW_HEIGHT / 2);
+				CurrentLevel = &level4;
+			}
+			else if (CurrentLevel->filename == "four.lvl") {
+				RenderingManager.SetWindowShouldClose(true);
+			}
 		}
 	}
 

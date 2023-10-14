@@ -14,7 +14,7 @@ BreakoutLevel::BreakoutLevel(const char* file) {
 	unsigned int tileCode;
 	std::string line;
 	std::ifstream levelFile(file);
-
+	filename = file;
 	if (levelFile) {
 		while (std::getline(levelFile, line)) {
 			std::istringstream sstream(line);

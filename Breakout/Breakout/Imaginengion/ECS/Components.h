@@ -34,3 +34,9 @@ struct C_Collision {
 	std::map<EntityID, CollisionFunc> CollisionEntityFunctions;
 	std::map<CollisionClasses, CollisionFunc> CollisionClassFunctions;
 };
+
+struct C_Particles {
+	glm::vec2 Position, Velocity;
+	glm::vec4 Color;
+	float Lifetime;
+};
